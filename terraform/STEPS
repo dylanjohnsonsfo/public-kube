@@ -1,20 +1,40 @@
- 9998  curl https://sdk.cloud.google.com | bash\n
-10000  exec -l $SHELL
-10001  echo $SHELL
-10002  gcloud init
+#GOOGLE
+#create service accout ---> https://medium.com/@timhberry/learn-terraform-by-deploying-a-google-kubernetes-engine-cluster-a29071d9a6c2
+#curl https://sdk.cloud.google.com | bash
+#exec -l $SHELL
+echo $SHELL
+#gcloud init
 
-- login with your google creds you used to setup your GCP account with , make sure you have create a project to use with gclod sdk
+gcloud iam service-accounts keys create ~/key.json --iam-account tutorial@able-rune-147405.iam.gserviceaccount.com
 
-#install terraform 
+gcloud container clusters get-credentials tutorial-gke-cluster --zone us-west1-a --project able-rune-147405  #change project
 
-https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_darwin_amd64.zip
+#HELM 
 
-validate install 
+cd /Users/dylan/k8s-scatch-blog/public-kube/istio-1.0.5
+kubectl apply -f install/kubernetes/helm/helm-service-account.yaml
 
-➜  terraform terraform version
-Terraform v0.11.8
+helm init --service-account tiller
+kubectl create ns istio-system
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system
 
-this needs an update ! 
+kubectl label namespace default istio-injection=enabled
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
+ikubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 
-gcloud iam service-accounts keys create ~/key.json
-  --iam-account tutorial@able-rune-147405.iam.gserviceaccount.com
+kubectl get destinationrules -o yaml
+
+
+#JENKINS 
+
+git clone git@github.com:dylanjohnsonsfo/charts.git
+helm install -n cd stable/jenkins -f stable/jenkins/values.yaml --version 0.16.6 --wait\n
+printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo\n
+export POD_NAME=$(kubectl get pods -l "component=cd-jenkins-master" -o jsonpath="{.items[0].metadata.name}")\nkubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
+
+
+#INSTRUMENTATION 
+
+kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
+
