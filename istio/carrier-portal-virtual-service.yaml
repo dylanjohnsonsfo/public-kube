@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: trimbletransportation-visibility-carrierportal-test
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trimbletransportation-visibility-carrierportal-test
+  http:
+  - match:
+    - uri:
+        exact: /
+    route:
+    - destination:
+        host: trimbletransportation-visibility-carrierportal-test
+        subset: v1
+        port:
+          number: 80
+      weight: 50
+    - destination:
+        host: trimbletransportation-visibility-carrierportal-test
+        subset: v2
+        port:
+          number: 80
+      weight: 50
+

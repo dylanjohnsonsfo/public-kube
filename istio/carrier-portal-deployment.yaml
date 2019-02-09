@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: trimbletransportation-visibility-carrierportal-test-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: trimbletransportation-visibility-carrierportal-test
+        version: v1
+    spec:
+      containers:
+      - name: trimbletransportation-visibility-carrierportal
+        image: nginxdemos/hello 
+        resources:
+          requests:
+            memory: "350Mi"
+            cpu: "125m"        
+        ports:
+        - containerPort: 80
+          name: http
+      imagePullSecrets:
+        - name: 104systems-acr-secret
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: trimbletransportation-visibility-carrierportal-test-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: trimbletransportation-visibility-carrierportal-test
+        version: v2
+    spec:
+      containers:
+      - name: trimbletransportation-visibility-carrierportal
+        image: nginxdemos/hello
+        resources:
+          requests:
+            memory: "350Mi"
+            cpu: "125m"
+        ports:
+        - containerPort: 80
+          name: http
+      imagePullSecrets:
+        - name: 104systems-acr-secret
+      nodeSelector:
+        beta.kubernetes.io/os: linux
