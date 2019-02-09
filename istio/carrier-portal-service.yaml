@@ -10,4 +10,3 @@ spec:
     name: http
   selector:
     app: trimbletransportation-visibility-carrierportal-test
-    #version: v1
