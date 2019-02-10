@@ -9,6 +9,7 @@ spec:
       labels:
         app: trimbletransportation-visibility-carrierportal-test
         version: v1
+        domain: blah.services.trimblevisibility.tech
     spec:
       containers:
       - name: trimbletransportation-visibility-carrierportal
@@ -48,6 +49,7 @@ spec:
       labels:
         app: trimbletransportation-visibility-carrierportal-test
         version: v2
+        domain: blah.services.trimblevisibility.tech
     spec:
       containers:
       - name: trimbletransportation-visibility-carrierportal

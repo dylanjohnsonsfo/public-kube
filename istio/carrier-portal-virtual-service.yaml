@@ -17,11 +17,11 @@ spec:
         subset: v1
         port:
           number: 80
-      weight: 50
+      weight: 50 
     - destination:
         host: trimbletransportation-visibility-carrierportal-test
         subset: v2
         port:
           number: 80
-      weight: 50 
+      weight: 50
 
