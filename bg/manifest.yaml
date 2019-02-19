@@ -108,17 +108,30 @@ spec:
   gateways:
   - app-gateway
   http:
-  - match:
-    - headers:
-        end-user:
-          exact: testing
-    route:
-    - destination:
-        host: myapp
-        subset: v1
-      weight: 99 
   - route:
     - destination:
-        host: myapp
+        host: reviews
         subset: v2
-      weight: 1        
+      weight: 50
+    - destination:
+        host: reviews
+        subset: v3
+      weight: 50
+
+#end user routing
+#
+#  http:
+#  - match:
+#    - headers:
+#        end-user:
+#          exact: testing
+#    route:
+#    - destination:
+#        host: myapp
+#        subset: v1
+#      weight: 50 
+#  - route:
+#    - destination:
+#        host: myapp
+#        subset: v2
+#      weight: 50
