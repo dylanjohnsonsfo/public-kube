@@ -1,27 +1,27 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp
+  name: myapp-qa
   labels:
-    app: myapp
+    app: myapp-qa
 spec:
   type: ClusterIP
   ports:
   - port: 80
     name: http
   selector:
-    app: myapp
+    app: myapp-qa
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: myapp-v1
+  name: myapp-v1-qa
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: myapp
+        app: myapp-qa
         version: v1
     spec:
       containers:
@@ -42,13 +42,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: myapp-v2
+  name: myapp-v2-qa
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: myapp
+        app: myapp-qa
         version: v2
     spec:
       containers:
@@ -68,7 +68,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: app-gateway
+  name: app-gateway-qa
 spec:
   selector:
     istio: ingressgateway
@@ -78,18 +78,18 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "myapp.services.trimblevisibility.tech"
+    - "myapp-qa.services.trimblevisibility.tech"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: myapp
+  name: myapp-qa
 spec:
-  host: myapp 
+  host: myapp-qa
   trafficPolicy:
     tls:
-      mode: ISTIO_MUTUAL
-      #mode: DISABLE
+      #mode: ISTIO_MUTUAL
+      mode: DISABLE
   subsets:
   - name: v1
     labels:
@@ -101,12 +101,12 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: myapp
+  name: myapp-qa
 spec:
   hosts:
-  - "myapp.services.trimblevisibility.tech"
+  - "myapp-qa.services.trimblevisibility.tech"
   gateways:
-  - app-gateway
+  - app-gateway-qa
   http:
   - match:
     - headers:
@@ -114,11 +114,11 @@ spec:
           exact: testing
     route:
     - destination:
-        host: myapp
+        host: myapp-qa
         subset: v1
-      weight: 50 
+      #weight: 100 
   - route:
     - destination:
-        host: myapp
+        host: myapp-qa
         subset: v2
-      weight: 50       
+      #weight: 100      
